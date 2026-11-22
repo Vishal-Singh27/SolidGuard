@@ -1,0 +1,76 @@
+{
+  "SWC-107": {
+    "name": "Reentrancy",
+    "severity": "Critical",
+    "description": "An external call to an untrusted contract is made before internal state variables (like balances) are updated. The external contract can recursively call back into the vulnerable contract and drain funds.",
+    "patterns": [
+      ".call{value:",
+      ".call.value(",
+      "msg.sender.call"
+    ],
+    "remediation": "Apply the Checks-Effects-Interactions pattern: update state variables before making external calls. Alternatively, inherit and use OpenZeppelin's ReentrancyGuard modifier (nonReentrant)."
+  },
+  "SWC-115": {
+    "name": "Authorization through tx.origin",
+    "severity": "High",
+    "description": "Using tx.origin for authentication or authorization checks allows phishing attacks where an intermediate malicious contract tricks an authorized user into calling it, passing authorization through.",
+    "patterns": [
+      "tx.origin ==",
+      "== tx.origin",
+      "require(tx.origin"
+    ],
+    "remediation": "Replace tx.origin with msg.sender for access control checks. tx.origin represents the original sender of the transaction, whereas msg.sender represents the immediate caller."
+  },
+  "SWC-105": {
+    "name": "Unprotected Ether Withdrawal",
+    "severity": "Critical",
+    "description": "Functions that transfer Ether or drain contract balances lack appropriate access control modifiers, allowing arbitrary external callers to withdraw contract funds.",
+    "patterns": [
+      "function withdraw(",
+      "function drain(",
+      "function transferFunds("
+    ],
+    "remediation": "Enforce strict access control modifiers such as onlyOwner or an authorized role manager, and verify caller permissions before executing asset transfers."
+  },
+  "SWC-106": {
+    "name": "Unprotected SELFDESTRUCT",
+    "severity": "Critical",
+    "description": "A selfdestruct instruction is callable by unauthorized users, allowing attackers to destroy the contract bytecode and force-send remaining Ether to an arbitrary address.",
+    "patterns": [
+      "selfdestruct(",
+      "suicide("
+    ],
+    "remediation": "Avoid selfdestruct in modern Solidity contracts. If mandatory, restrict invocation strictly to a multisig governance address with a timelock."
+  },
+  "SWC-104": {
+    "name": "Unchecked Call Return Value",
+    "severity": "Medium",
+    "description": "The return value of a low-level call (e.g. address.send() or address.call()) is not verified. If the external call fails, execution continues silently, resulting in inconsistent state.",
+    "patterns": [
+      ".send(",
+      ".call("
+    ],
+    "remediation": "Always check the boolean success flag returned by low-level calls: (bool success, ) = recipient.call{value: amount}(''); require(success, 'Transfer failed');."
+  },
+  "SWC-116": {
+    "name": "Block Values as a Proxy for Time (Timestamp Dependence)",
+    "severity": "Medium",
+    "description": "Using block.timestamp or now for critical logic such as pseudo-random number generation or strict time locks allows miners/validators to manipulate block timestamps within ~15-second windows.",
+    "patterns": [
+      "block.timestamp %",
+      "now %",
+      "uint(block.timestamp)"
+    ],
+    "remediation": "Never use block.timestamp for randomness (use Chainlink VRF). For time locks, allow a sufficient tolerance margin of several minutes."
+  },
+  "SWC-100": {
+    "name": "Function Default Visibility",
+    "severity": "Low",
+    "description": "Functions that omit explicit visibility specifiers default to public in older Solidity versions, unintentionally exposing internal helper routines to external invocation.",
+    "patterns": [
+      "function _",
+      "function internal"
+    ],
+    "remediation": "Explicitly specify visibility (external, public, internal, private) for every function declaration."
+  }
+}
