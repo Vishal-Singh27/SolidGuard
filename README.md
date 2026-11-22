@@ -94,8 +94,8 @@ Open your browser at `http://localhost:8501`.
 
 ---
 
-## 🎯 Alignment with Datopic Technologies
-Datopic engineers decentralized applications and smart contracts across Ethereum, Polygon, and Hyperledger, emphasizing gas optimization and security audits. **SolidGuard demonstrates practical competence in identifying smart contract attack surfaces and enforcing defensive design patterns.**
+## 🎯 Research & Engineering Impact
+Developed as an applied Web3 security engineering system, **SolidGuard demonstrates practical static analysis, defensive design patterns (Checks-Effects-Interactions), and automated vulnerability discovery for EVM-based smart contracts.**
 
 ---
 
